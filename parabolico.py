@@ -2,48 +2,55 @@ from random import randrange
 from turtle import *
 from freegames import vector
 
-ball = vector(-200, -200) #posicion inicial de la pelota
-speed = vector(0, 0) #velocidad inicial de la pelota roja
-targets = [] #lista para almacenar los objetivos
+ball = vector(-200, -200)  # Posición inicial de la bola
+speed = vector(0, 0)  # Velocidad inicial de la bola
+targets = []  # Lista para almacenar los objetivos
 
+# Función que responde al clic en la pantalla
 def tap(x, y):
-    "Respond to screen tap."
-    if not inside(ball):
+    """Respond to screen tap."""
+    if not inside(ball):  # Si la bola está fuera de la pantalla
         ball.x = -199
         ball.y = -199
-        speed.x = (x + 200) / 15  #aumenta la velocidad, pasando la posicion a una velocidad. Se cambio el 25 por un 15
-        speed.y = (y + 200) / 15  #aumenta la velocidad, pasando la posicion a una velocidad. Se cambio el 25 por un 15
+        speed.x = (x + 200) / 15  # Aumenta la velocidad, pasando la posicion a velocidad 
+        speed.y = (y + 200) / 15  # Aumenta la velocidad, pasando la posicion a velocidad
 
-def inside(xy):  #verifica si un punto esta dentro del rango de la pantalla
-    "Return True if xy within screen."
+# Función que verifica si un punto está dentro de la pantalla
+def inside(xy):
+    """Return True if xy within screen."""
     return -200 < xy.x < 200 and -200 < xy.y < 200
 
-def draw(): #funcion que dibuja los objetivos
-    "Draw ball and targets."
+# Función que dibuja los objetivos y la bola
+def draw():
+    """Draw ball and targets."""
     clear()
-
+    
     for target in targets:
         goto(target.x, target.y)
-        dot(20, 'blue') #dibuja los objetivos en azul
+        dot(20, 'blue')  # Dibuja los objetivos en azul
 
     if inside(ball):
         goto(ball.x, ball.y)
-        dot(6, 'red') #dibuja la pelota roja
+        dot(6, 'red')  # Dibuja la bola en rojo
 
     update()
 
-def move(): 
-    "Move ball and targets." #los objetivos aparecen en pantalla 
-    if randrange(40) == 0:
+# Función que mueve la bola y los objetivos
+def move():
+    """Move ball and targets."""
+    if randrange(30) == 0:  # Hace que aparezcan más objetivos
         y = randrange(-150, 150)
         target = vector(200, y)
         targets.append(target)
 
     for target in targets:
-        target.x -= 3.2 #reduce el eje x en 3.2 unidades. Por lo que da la sensación de ir más rápido
+        target.x -= 3.2  # reduce el eje X en 3.2 unidades. Por lo que da la sensacion de ir mas rapido
+        if target.x < -210:  # Si el objetivo sale de la ventana, lo reposiciona. Ya que mide 200x200
+            target.x = 200  #reposiciona el objetivo
+            target.y = randrange(-150, 150) #aleatorio en eje Y
 
     if inside(ball):
-        speed.y -= 0.5 #aumentamos el valor en y, para que en el mov en y sea más rápido
+        speed.y -= 0.5  # Aumenta la gravedad para un movimiento más rápido
         ball.move(speed)
 
     dupe = targets.copy()
@@ -54,12 +61,7 @@ def move():
             targets.append(target)
 
     draw()
-
-    for target in targets:
-        if not inside(target):
-            return
-
-    ontimer(move, 35) #disminuimos el intervalo del tiempo a 35 para mayor velocidad
+    ontimer(move, 30)  # Disminuye el intervalo de tiempo para mayor velocidad
 
 setup(420, 420, 370, 0)
 hideturtle()
